@@ -1,7 +1,7 @@
 import random
-# used to randomize the tree each time
+# Used to randomize the tree each time
 
-#creating the node
+# Creating the node
 class Node:
     def __init__(self, x, y, level, parent=None):
         self.x = x
@@ -9,12 +9,20 @@ class Node:
         self.level = level
         self.parent = parent  # Keep track of the parent node
 
-#creating function to create tree
-def generate_tree(x, y, level, parent=None, direction=None):
+# Creating function to generate the tree
+def generate_tree(x, y, level, parent=None, direction=None, visited=None):
     if level > 4:  # Limit depth to 4
         return
     
+    if visited is None:
+        visited = set()
+    
     node = Node(x, y, level, parent)  # Create node
+    
+    move_key = (x, y)
+    if move_key in visited:
+        return  # Prevent duplicate moves
+    visited.add(move_key)
     
     if parent:
         print(f"Level {level}: ({x}, {y}) <- ({parent.x}, {parent.y}) {direction}")  # Show connection and direction taken
@@ -28,7 +36,7 @@ def generate_tree(x, y, level, parent=None, direction=None):
     for _ in range(num_descendants):
         direction_index = random.randint(0, 2)  # Pick a random direction
         new_x, new_y, move_label = directions[direction_index]  # Extract values
-        generate_tree(x + new_x, y + new_y, level + 1, node, move_label)  # Create new levels with correct direction
+        generate_tree(x + new_x, y + new_y, level + 1, node, move_label, visited)  # Generate new levels, avoiding duplicates
 
 # Start the tree from (0,0)
 generate_tree(0, 0, 1)
